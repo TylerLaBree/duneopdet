@@ -21,14 +21,14 @@ class LightYieldMap {
       if (!(0<= myNormDir && myNormDir<=2)) {
         cout << "ERROR: Normal direction not valid." << endl;
       } 
-      if (!(0 <= myNormBoundsInVx[0] && myNormBoundsInVx[0] < lib->cryostatBoundsInVx[myNormDir][1])) {
+      if (!(0 <= myNormBoundsInVx[0] && myNormBoundsInVx[0] < lib->simulatedBoundsInVx[myNormDir][1])) {
         cout << "ERROR: Position is out of cryo range." << endl;
-      } else if (!(lib->detectorBoundsInVx[myNormDir][0] <= myNormBoundsInVx[0] && myNormBoundsInVx[0] < lib->detectorBoundsInVx[myNormDir][1])) {
+      } else if (!(lib->fiducialBoundsInVx[myNormDir][0] <= myNormBoundsInVx[0] && myNormBoundsInVx[0] < lib->fiducialBoundsInVx[myNormDir][1])) {
         cout << "WARNING: Position is out of fiducial range." << endl;
       }
-      if (!(0 <= myNormBoundsInVx[1]-1 && myNormBoundsInVx[1]-1 < lib->cryostatBoundsInVx[myNormDir][1])) {
+      if (!(0 <= myNormBoundsInVx[1]-1 && myNormBoundsInVx[1]-1 < lib->simulatedBoundsInVx[myNormDir][1])) {
         cout << "ERROR: Position is out of cryo range." << endl;
-      } else if (!(lib->detectorBoundsInVx[myNormDir][0] <= myNormBoundsInVx[1]-1 && myNormBoundsInVx[1]-1 < lib->detectorBoundsInVx[myNormDir][1])) {
+      } else if (!(lib->fiducialBoundsInVx[myNormDir][0] <= myNormBoundsInVx[1]-1 && myNormBoundsInVx[1]-1 < lib->fiducialBoundsInVx[myNormDir][1])) {
         cout << "WARNING: Position is out of fiducial range." << endl;
       }
 
@@ -57,8 +57,8 @@ class LightYieldMap {
     // normal to the map.
     void SetMap() {
       Int_t indices[3] = {0,0,0};
-      for (indices[mapDirs[0]]=lib->detectorBoundsInVx[mapDirs[0]][0]; indices[mapDirs[0]]<lib->detectorBoundsInVx[mapDirs[0]][1]; indices[mapDirs[0]]++) {
-        for (indices[mapDirs[1]]=lib->detectorBoundsInVx[mapDirs[1]][0]; indices[mapDirs[1]]<lib->detectorBoundsInVx[mapDirs[1]][1]; indices[mapDirs[1]]++) {
+      for (indices[mapDirs[0]]=lib->fiducialBoundsInVx[mapDirs[0]][0]; indices[mapDirs[0]]<lib->fiducialBoundsInVx[mapDirs[0]][1]; indices[mapDirs[0]]++) {
+        for (indices[mapDirs[1]]=lib->fiducialBoundsInVx[mapDirs[1]][0]; indices[mapDirs[1]]<lib->fiducialBoundsInVx[mapDirs[1]][1]; indices[mapDirs[1]]++) {
           map[indices[mapDirs[0]]][indices[mapDirs[1]]] = 0;
           for (indices[normDir]=normBoundsInVx[0]; indices[normDir]<normBoundsInVx[1]; indices[normDir]++) {
             map[indices[mapDirs[0]]][indices[mapDirs[1]]] += lib->LYPerVx[indices[0]][indices[1]][indices[2]];
@@ -72,10 +72,10 @@ class LightYieldMap {
     void SetAvg() {
       Double_t numerator = 0;
       Double_t denominator =
-        (lib->detectorBoundsInVx[mapDirs[0]][1] - lib->detectorBoundsInVx[mapDirs[0]][0])
-        * (lib->detectorBoundsInVx[mapDirs[1]][1] - lib->detectorBoundsInVx[mapDirs[1]][0]);
-      for (int i=lib->detectorBoundsInVx[mapDirs[0]][0]; i<lib->detectorBoundsInVx[mapDirs[0]][1]; i++) {
-        for (int j=lib->detectorBoundsInVx[mapDirs[1]][0]; j<lib->detectorBoundsInVx[mapDirs[1]][1]; j++) {
+        (lib->fiducialBoundsInVx[mapDirs[0]][1] - lib->fiducialBoundsInVx[mapDirs[0]][0])
+        * (lib->fiducialBoundsInVx[mapDirs[1]][1] - lib->fiducialBoundsInVx[mapDirs[1]][0]);
+      for (int i=lib->fiducialBoundsInVx[mapDirs[0]][0]; i<lib->fiducialBoundsInVx[mapDirs[0]][1]; i++) {
+        for (int j=lib->fiducialBoundsInVx[mapDirs[1]][0]; j<lib->fiducialBoundsInVx[mapDirs[1]][1]; j++) {
           numerator += map[i][j];
         }
       }
@@ -86,8 +86,8 @@ class LightYieldMap {
     void SetMin() {
       Double_t minVal = 1.79769e+308;
       Int_t minPos[2] = {-1,-1};
-      for (int i=lib->detectorBoundsInVx[mapDirs[0]][0]; i<lib->detectorBoundsInVx[mapDirs[0]][1]; i++) {
-        for (int j=lib->detectorBoundsInVx[mapDirs[1]][0]; j<lib->detectorBoundsInVx[mapDirs[1]][1]; j++) {
+      for (int i=lib->fiducialBoundsInVx[mapDirs[0]][0]; i<lib->fiducialBoundsInVx[mapDirs[0]][1]; i++) {
+        for (int j=lib->fiducialBoundsInVx[mapDirs[1]][0]; j<lib->fiducialBoundsInVx[mapDirs[1]][1]; j++) {
           if (map[i][j] < minVal) {
             minVal = map[i][j];
             minPos[0] = i;
@@ -101,23 +101,23 @@ class LightYieldMap {
     // Draw the light yield map.
     void Draw() {
       TH2D *mapHist = new TH2D("mapHist",title.Data(),
-          (lib->detectorBoundsInVx[mapDirs[1]][1] - lib->detectorBoundsInVx[mapDirs[1]][0]),
-          lib->GetPosInM(mapDirs[1], lib->detectorBoundsInVx[mapDirs[1]][0]),
-          lib->GetPosInM(mapDirs[1], lib->detectorBoundsInVx[mapDirs[1]][1]),
-          (lib->detectorBoundsInVx[mapDirs[0]][1] - lib->detectorBoundsInVx[mapDirs[0]][0]),
-          lib->GetPosInM(mapDirs[0], lib->detectorBoundsInVx[mapDirs[0]][0]),
-          lib->GetPosInM(mapDirs[0], lib->detectorBoundsInVx[mapDirs[0]][1]));
-      for (int i=lib->detectorBoundsInVx[mapDirs[0]][0]; i<lib->detectorBoundsInVx[mapDirs[0]][1]; i++) {
+          (lib->fiducialBoundsInVx[mapDirs[1]][1] - lib->fiducialBoundsInVx[mapDirs[1]][0]),
+          lib->GetPosInM(mapDirs[1], lib->fiducialBoundsInVx[mapDirs[1]][0]),
+          lib->GetPosInM(mapDirs[1], lib->fiducialBoundsInVx[mapDirs[1]][1]),
+          (lib->fiducialBoundsInVx[mapDirs[0]][1] - lib->fiducialBoundsInVx[mapDirs[0]][0]),
+          lib->GetPosInM(mapDirs[0], lib->fiducialBoundsInVx[mapDirs[0]][0]),
+          lib->GetPosInM(mapDirs[0], lib->fiducialBoundsInVx[mapDirs[0]][1]));
+      for (int i=lib->fiducialBoundsInVx[mapDirs[0]][0]; i<lib->fiducialBoundsInVx[mapDirs[0]][1]; i++) {
         Double_t x = lib->GetPosInM(mapDirs[0],Double_t(i)+0.5);
-        for (int j=lib->detectorBoundsInVx[mapDirs[1]][0]; j<lib->detectorBoundsInVx[mapDirs[1]][1]; j++) {
+        for (int j=lib->fiducialBoundsInVx[mapDirs[1]][0]; j<lib->fiducialBoundsInVx[mapDirs[1]][1]; j++) {
           Double_t y = lib->GetPosInM(mapDirs[1],Double_t(j)+0.5);
           Int_t bin = mapHist->Fill(y,x,map[i][j]);
         }
       }
 
       TCanvas* myC = new TCanvas("myC", "Light Yield", 20, 52, 1250,
-          Double_t(lib->detectorBoundsInVx[mapDirs[0]][1])
-          /Double_t(lib->detectorBoundsInVx[mapDirs[1]][1])*1250.);
+          Double_t(lib->fiducialBoundsInVx[mapDirs[0]][1])
+          /Double_t(lib->fiducialBoundsInVx[mapDirs[1]][1])*1250.);
       myC->SetRightMargin(0.13);
       myC->SetTopMargin(0.13);
       mapHist->SetStats(0);
