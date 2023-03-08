@@ -55,9 +55,7 @@ class PhotonLibrary {
       Int_t nVx = 1;
       for (int i=0; i<3; i++)
         nVx *= (simulatedBoundsInVx[i][1] - simulatedBoundsInVx[i][0]);
-      Double_t visPerVx[nVx];
-      for (int i=0; i<nVx; i++)
-        visPerVx[nVx] = 0;
+      vector<Double_t> visPerVx(nVx,1);
 
       TFile *file = TFile::Open(filename);
       TTree *tree = (TTree*)file->Get("PhotonLibraryData");
