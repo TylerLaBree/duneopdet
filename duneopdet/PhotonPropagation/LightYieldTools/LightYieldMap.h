@@ -1,6 +1,8 @@
 // Tyler LaBree
 // Northern Illinois University
 
+#include "DUNEStyle.h"
+
 // From a photon library, average voxel slices to get light yield map.
 class LightYieldMap {
   public:
@@ -12,7 +14,6 @@ class LightYieldMap {
     Double_t average;         // Average light yield for the map.
     Double_t minimum;         // Minimum light yield for the map.
     TString title;
-    TString subtitle;
 
     LightYieldMap(PhotonLibrary* myLib, Int_t myNormDir, Int_t myNormBoundsInVx[2], TString descriptor) {
       lib = myLib;
@@ -41,7 +42,6 @@ class LightYieldMap {
       title = Form("Light Yield (%s%c = %.2f - %.2f m);%c [m];%c [m]; Light Yield [PE/MeV]"
           , descriptor.Data(), dirNames[normDir], lib->GetPosInM(normDir,Double_t(normBoundsInVx[0]))
           , lib->GetPosInM(normDir,Double_t(normBoundsInVx[1])), dirNames[mapDirs[1]], dirNames[mapDirs[0]]);
-      subtitle = Form("LY_min = %.2f   <LY> = %.2f", minimum, average);
       return 0;
     }
 
@@ -118,21 +118,16 @@ class LightYieldMap {
       TCanvas* myC = new TCanvas("myC", "Light Yield", 20, 52, 1250,
           Double_t(lib->fiducialBoundsInVx[mapDirs[0]][1])
           /Double_t(lib->fiducialBoundsInVx[mapDirs[1]][1])*1250.);
-      myC->SetRightMargin(0.13);
-      myC->SetTopMargin(0.13);
-      mapHist->SetStats(0);
-      gStyle->SetNumberContours(20);
-      gStyle->SetPalette(kBird);
+
+      dunestyle::SetDuneStyle();
+      dunestyle::Simulation();
       mapHist->GetZaxis()->SetRangeUser(0, 110);
       mapHist->Draw("colz");
-      //mapHist->GetZaxis()->SetRangeUser(0.4, 0.9);
 
-      TPaveText *pt = new TPaveText(0.3,0.88,0.7,0.93,"blNDC");
-      pt->SetName("subtitle");
-      pt->SetBorderSize(2);
-      pt->SetFillColor(19);
-      pt->AddText(subtitle.Data());
-      pt->Draw("same");
+      auto legend = new TLegend(0.7,0.775,0.825,0.875);
+      legend->AddEntry("avg",Form("<LY> = %.2f", average),"");
+      legend->AddEntry("min",Form("LY_min = %.2f", minimum),"");
+      legend->Draw();
     }
 };
 
