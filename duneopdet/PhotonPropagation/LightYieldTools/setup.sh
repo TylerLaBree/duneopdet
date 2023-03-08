@@ -1,4 +1,6 @@
 #!/bin/bash
+# Tyler LaBree
+# Northern Illinois University
 
 # Setup the latest versions of root and dune-plot-style
 source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh

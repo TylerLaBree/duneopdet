@@ -1,6 +1,5 @@
 // Tyler LaBree
 // Northern Illinois University
-#include "DUNEStyle.h"
 
 #include "PhotonLibrary.h"
 #include "LightYieldMap.h"
