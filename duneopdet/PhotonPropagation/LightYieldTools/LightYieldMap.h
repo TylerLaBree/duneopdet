@@ -120,7 +120,6 @@ class LightYieldMap {
           /Double_t(lib->fiducialBoundsInVx[mapDirs[1]][1])*1250.);
 
       dunestyle::SetDuneStyle();
-      dunestyle::Simulation();
       mapHist->GetZaxis()->SetRangeUser(0, 110);
       mapHist->Draw("colz");
 
@@ -128,6 +127,7 @@ class LightYieldMap {
       legend->AddEntry("avg",Form("<LY> = %.2f", average),"");
       legend->AddEntry("min",Form("LY_min = %.2f", minimum),"");
       legend->Draw();
+      dunestyle::Simulation();
     }
 };
 

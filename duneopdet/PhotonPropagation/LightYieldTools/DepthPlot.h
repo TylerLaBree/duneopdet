@@ -25,7 +25,6 @@ void DrawDepthPlot(PhotonLibrary* lib, Int_t minDepth, Int_t maxDepth) {
 
   TCanvas* myC2 = new TCanvas("myC2", "Light Yield vs Depth", 20, 52, 1250, 650);
   dunestyle::SetDuneStyle();
-  dunestyle::Simulation();
   TGraph *lyAvgDepth = new TGraph(dist,depths, averageLYs);
   TGraph *lyMinDepth = new TGraph(dist,depths, minimumLYs);
   dunestyle::colors::NextColor();
@@ -41,4 +40,5 @@ void DrawDepthPlot(PhotonLibrary* lib, Int_t minDepth, Int_t maxDepth) {
   legend->AddEntry(lyAvgDepth,"Average","p");
   legend->AddEntry(lyMinDepth,"Minimum","p");
   legend->Draw();
+  dunestyle::Simulation();
 }
