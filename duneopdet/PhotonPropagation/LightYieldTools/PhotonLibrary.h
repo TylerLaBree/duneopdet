@@ -7,17 +7,6 @@
 
 #include "TH2D.h"
 #include "TH1.h"
-// Detector dimensions
-Double_t simulatedBoundsInM[3][2] = {
-  {-4.2512,  4.252 },
-  {-7.7412,  7.7412},
-  {-1.0012, 21.9173}
-};
-Double_t fiducialBoundsInM[3][2] = {
-  {-3.25  ,  3.25  },
-  {-6.75  ,  6.75  },
-  { 0.    , 21.    }
-};
 
 // Extra constants
 Char_t dirNames[3] = {'x', 'y', 'z'};
@@ -29,28 +18,27 @@ const int maxVxDim = 200;           // Reserves memory. Should be greater than
 // Import a photon library file and put it in a 3D array of light yields.
 class PhotonLibrary {
   public:
+    Double_t simulatedBoundsInM[3][2];
+    Double_t fiducialBoundsInM[3][2];
     Int_t simulatedBoundsInVx[3][2]; // Include min, but exclude max
-    Int_t fiducialBoundsInVx[3][2]; // Include min, but exclude max
+    Int_t fiducialBoundsInVx[3][2];  // Include min, but exclude max
     Double_t LYPerVx[maxVxDim][maxVxDim][maxVxDim]; // Light Yield per voxel. Only valid on detector bounds.
 
-    PhotonLibrary(TString myFilename, Int_t myVxDims[3]) {
-      SetCryostatVol(myVxDims);
-      SetDetectorVol();
-      SetLYPerVx(myFilename);
-    }
-
-    void SetCryostatVol(Int_t vxDims[3]) {
+    PhotonLibrary(TString myFilename, Int_t myVxDims[3], Double_t mySimBoundsInM[3][2], Double_t myFidBoundsInM[3][2]) {
+      // Set simulated and fiducial boundaries.
       for (int i=0; i<3; i++) {
+        for (int j=0; j<2; j++) {
+          simulatedBoundsInM[i][j] = mySimBoundsInM[i][j];
+          fiducialBoundsInM[i][j] = myFidBoundsInM[i][j];
+        }
         simulatedBoundsInVx[i][0] = 0;
-        simulatedBoundsInVx[i][1] = vxDims[i];
-      }
-    }
-    void SetDetectorVol() {
-      for (int i=0; i<3; i++) {
+        simulatedBoundsInVx[i][1] = myVxDims[i];
         fiducialBoundsInVx[i][0] = Int_t(GetPosInVx(i, fiducialBoundsInM[i][0])+1);
         fiducialBoundsInVx[i][1] = Int_t(GetPosInVx(i, fiducialBoundsInM[i][1]));
       }
+      SetLYPerVx(myFilename);
     }
+
     void SetLYPerVx(TString filename) {
       Int_t nVx = 1;
       for (int i=0; i<3; i++)

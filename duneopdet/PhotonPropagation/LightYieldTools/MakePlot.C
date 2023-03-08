@@ -5,10 +5,23 @@
 #include "LightYieldMap.h"
 #include "DepthPlot.h"
 void MakePlot() {
+  Double_t simulatedBoundsInM[3][2] = {
+    {-4.2512,  4.252 },
+    {-7.7412,  7.7412},
+    {-1.0012, 21.9173}
+  };
+  Double_t fiducialBoundsInM[3][2] = {
+    {-3.25  ,  3.25  },
+    {-6.75  ,  6.75  },
+    { 0.    , 21.    }
+  };
+
   Int_t dims[3] = {50,93,137};
   PhotonLibrary* lib = new PhotonLibrary(
     "/dune/app/users/wemark/photon-library/lib_dunevd10kt_1x8x14_3_20221025.root"
-    , dims);
+    , dims
+    , simulatedBoundsInM
+    , fiducialBoundsInM);
   
   // Define depth ranges on which to average over to make light yield plots.
   Int_t centerSlice[2] = {68,70};
