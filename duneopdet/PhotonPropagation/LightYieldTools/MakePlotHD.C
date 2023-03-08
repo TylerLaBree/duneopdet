@@ -6,12 +6,12 @@
 #include "DepthPlot.h"
 
 void MakePlotHD() {
-  Double_t cryostatBoundsInM[3][2] = { // For horizontal drift
+  Double_t simulatedBoundsInM[3][2] = { // For horizontal drift
     { 0.    ,  3.79  },
     {-6.50  ,  6.50  },
     { 0.    , 14.40  }
   };
-  Double_t detectorBoundsInM[3][2] = { // For horizontal drift
+  Double_t fiducialBoundsInM[3][2] = { // For horizontal drift
     { 0.    ,  3.79  },
     {-6.50  ,  6.50  },
     { 0.052 , 14.348 }
