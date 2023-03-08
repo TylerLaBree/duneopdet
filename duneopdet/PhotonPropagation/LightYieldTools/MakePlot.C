@@ -18,7 +18,7 @@ void MakePlot() {
   /* Make a light yield plot perpendicular to the z-dir, averaged over the
    * range 60-78 voxels, using the photon library made above.
    */
-  LightYieldMap* lymap = new LightYieldMap(lib, 2, centerAvg, "Average over ");
+  LightYieldMap* lymap = new LightYieldMap(lib, 2, centerAvg);
   lymap->Draw();
 
   // Draw average and minimum light yield across detector depth.

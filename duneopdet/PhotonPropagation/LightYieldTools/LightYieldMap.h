@@ -15,7 +15,7 @@ class LightYieldMap {
     Double_t minimum;         // Minimum light yield for the map.
     TString title;
 
-    LightYieldMap(PhotonLibrary* myLib, Int_t myNormDir, Int_t myNormBoundsInVx[2], TString descriptor) {
+    LightYieldMap(PhotonLibrary* myLib, Int_t myNormDir, Int_t myNormBoundsInVx[2]) {
       lib = myLib;
 
       // Error handling. Are arguments in an acceptable range?
@@ -39,8 +39,8 @@ class LightYieldMap {
       SetMap();
       SetAvg();
       SetMin();
-      title = Form("Light Yield (%s%c = %.2f - %.2f m);%c [m];%c [m]; Light Yield [PE/MeV]"
-          , descriptor.Data(), dirNames[normDir], lib->GetPosInM(normDir,Double_t(normBoundsInVx[0]))
+      title = Form("Light Yield Average On {%c | %.2f < %c < %.2f m};%c [m];%c [m]; Light Yield [PE/MeV]"
+          , dirNames[normDir], lib->GetPosInM(normDir,Double_t(normBoundsInVx[0])), dirNames[normDir]
           , lib->GetPosInM(normDir,Double_t(normBoundsInVx[1])), dirNames[mapDirs[1]], dirNames[mapDirs[0]]);
       return 0;
     }

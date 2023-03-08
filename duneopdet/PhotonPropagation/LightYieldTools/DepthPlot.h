@@ -14,7 +14,7 @@ void DrawDepthPlot(PhotonLibrary* lib, Int_t minDepth, Int_t maxDepth) {
     depths[i] = lib->GetPosInM(2,Double_t(i+minDepth)+0.5);
 
     Int_t slice[2] = {i+minDepth,i+minDepth+1};
-    LightYieldMap* depthLYMap = new LightYieldMap(lib, 2, slice, "");
+    LightYieldMap* depthLYMap = new LightYieldMap(lib, 2, slice);
     averageLYs[i] = depthLYMap->average;
     minimumLYs[i] = depthLYMap->minimum;
 
@@ -32,7 +32,7 @@ void DrawDepthPlot(PhotonLibrary* lib, Int_t minDepth, Int_t maxDepth) {
   lyAvgDepth->SetMarkerColor(dunestyle::colors::NextColor());
   lyMinDepth->SetMarkerStyle(20);
   lyMinDepth->SetMarkerColor(dunestyle::colors::NextColor());
-  lyAvgDepth->SetTitle("Light Yield vs Detector Depth;z [m];LY [PE/MeV]");
+  lyAvgDepth->SetTitle("Light Yield vs Detector Depth;z [m];Light Yield [PE/MeV]");
   lyAvgDepth->Draw("AP");
   lyAvgDepth->GetYaxis()->SetRangeUser(0.,plotMax);
   lyMinDepth->Draw("SAMEP");
